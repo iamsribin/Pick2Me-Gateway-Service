@@ -17,10 +17,11 @@ export default class PaymentController {
         return;
       }
 
-      // Call payment service via gRPC
       await PaymentService.CreateCheckoutSession(
         { bookingId, userId, driverId, amount },
         (err: Error | null, result: { sessionId: string; message: string }) => {
+          console.log("result",result);
+          
           if (err) {
             res.status(StatusCode.BadRequest).json({ message: err.message });
             return;
@@ -188,8 +189,6 @@ export default class PaymentController {
   }
 
   async handleStripeWebhook(req: Request, res: Response): Promise<void> {
-    // Note: Webhook handling will be implemented in the payment service
-    // This endpoint just forwards the webhook to the payment service
     try {
       const payload = req.body;
 

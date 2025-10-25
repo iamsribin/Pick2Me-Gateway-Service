@@ -1,5 +1,5 @@
 import { StatusCode } from "../../types/common/enum";
-import { ResubmissionInterface } from "../../interfaces/resubmission.interface";
+import { ResubmissionInterface } from "../../types/common/response";
 
 export interface Res_checkLogin{
     status: StatusCode,
@@ -31,7 +31,6 @@ export interface Res_checkRegisterDriver{
   driverId?: string;
   nextStep?: 'documents' | 'driverImage' | 'location' | 'insurance' | 'vehicle' | null;
 }
-
 
 export interface DriverProfileDTO {
   name: string;

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import uploadToS3, { uploadToS3Public } from "../../../services/s3";
 import { DriverService } from "../../driver/config/driver.client";
-import { commonRes } from "../../../types/common/common-response";
+import { commonRes } from "../../../types/common/response";
 import {
   CheckLoginUserRes,
   CheckRegisterDriverRes,

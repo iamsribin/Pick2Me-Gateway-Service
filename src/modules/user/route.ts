@@ -23,6 +23,7 @@ protectedUserRoute.get("/get-my-profile", userController.fetchUserProfile)
 protectedUserRoute.get("/getMyTrips/:role", bookingController.fetchDriverBookingList)
 protectedUserRoute.get("/getMyTripDetails/:id", bookingController.fetchDriverBookingDetails);
 protectedUserRoute.get("/payments/cash-payment", paymentController.conformCashPayment);
+protectedUserRoute.get("/payments/create-checkout-session", paymentController.createCheckoutSession);
 
 // protectedUserRoute.get("/profile", userController.getProfile); 
 // protectedUserRoute.post("/booking", userController.createBooking); 

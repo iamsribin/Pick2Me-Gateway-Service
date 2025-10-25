@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import { UserService } from "./config/user.client";
 import { StatusCode } from "../../types/common/enum";
-import { Message, AuthResponse } from "../../interfaces/interface";
 import { uploadToS3Public } from "../../services/s3";
-import { commonRes } from "../../types/common/common-response";
 import { IResponse } from "../driver/interface";
 import { UserProfileDto } from "./types";
+import { Message } from "google-protobuf";
+import { AuthResponse } from "../../types/common/response";
 
 class UserController {
   /**

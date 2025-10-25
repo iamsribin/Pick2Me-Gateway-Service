@@ -2,8 +2,7 @@ import { Request, Response } from "express";
 import { StatusCode } from "../../types/common/enum";
 import { RideService } from "./config/ride.client";
 import { IResponse } from "../driver/interface";
-import { PricingInterface } from "../../interfaces/pricing.interface";
-// import bookingRabbitMqClient from "../booking/rabbitmq/client";
+import { PricingInterface } from "../../types/common/response";
 
 export interface ControllerResponse {
   message: string;

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { UserService } from "../../user/config/user.client";
-import { UserInterface } from "../../../interfaces/interface";
 import { StatusCode } from "../../../types/common/enum";
+import { UserInterface } from "../../../types/common/response";
 
 export default class AdminController {
   getUsersList = (req: Request, res: Response) => {
