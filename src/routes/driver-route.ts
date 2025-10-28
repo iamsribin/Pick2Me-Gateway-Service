@@ -1,9 +1,10 @@
 import express from "express";
-import upload from "../../middleware/multer";
-import { authController } from "./controllers/auth-controller";
-import {bookingController} from "../booking/controller";
-import { driverController } from "./controllers/driver-controller";
-import PaymentController from "../payment/controller";
+import upload from "../middleware/multer";
+
+import PaymentController from "../modules/payment/payment-controller";
+import { bookingController } from "../modules/booking/booking-controller";
+import { authController } from "../modules/driver/auth-controller";
+import { driverController } from "../modules/driver/driver-controller";
 
 const paymentController = new PaymentController()
 const publicDriverRoute = express.Router();

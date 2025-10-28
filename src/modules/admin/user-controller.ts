@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
-import { UserService } from "../../user/config/user.client";
-import { StatusCode } from "../../../types/common/enum";
-import { UserInterface } from "../../../types/common/response";
+// import { UserInterface } from "../../../types/common/response";
+import { grpcClients } from "../../grpc/grpc-client-manager";
+import { IResponse, StatusCode } from "@retro-routes/shared";
 
 export default class AdminController {
   getUsersList = (req: Request, res: Response) => {
     try {
       const { page = 1, limit = 10, search = "", status } = req.query;
       const searchTerm = search as string;
-      UserService.AdminGetUsersList(
+      grpcClients.userClient.AdminGetUsersList(
         { page, limit, search: searchTerm, status },
         (err: any, result: any) => {
           if (err) {
@@ -30,9 +30,9 @@ export default class AdminController {
 
   getBlockedUsers = (req: Request, res: Response) => {
     try {
-      UserService.AdminGetBlockedUsers(
+      grpcClients.userClient.AdminGetBlockedUsers(
         {},
-        (err: any, result: { Users: UserInterface }) => {
+        (err: any, result: { Users: IResponse<null> }) => {
           if (err) {
             res.status(StatusCode.BadRequest).json({ message: err });
           } else {
@@ -46,9 +46,9 @@ export default class AdminController {
 
   getUserData = (req: Request, res: Response) => {
     try {
-      UserService.AdminGetUserData(
+      grpcClients.userClient.AdminGetUserData(
         req.query,
-        (err: any, result: { User: UserInterface }) => {
+        (err: any, result: { User: IResponse<null> }) => {
           if (err) {
             res.status(StatusCode.BadRequest).json({ message: err });
           } else {
@@ -73,7 +73,7 @@ export default class AdminController {
         id,
       };
 
-      UserService.AdminUpdateUserStatus(
+      grpcClients.userClient.AdminUpdateUserStatus(
         request,
         (err: any, result: { message: any }) => {
           if (err) {

@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
-import { StatusCode } from "../../types/common/enum";
-import { RideService } from "./config/ride.client";
-import { IResponse } from "../driver/interface";
-import { PricingInterface } from "../../types/common/response";
+import { grpcClients } from "../../grpc/grpc-client-manager";
+import { IResponse, StatusCode } from "@retro-routes/shared";
 
 export interface ControllerResponse {
   message: string;
@@ -13,9 +11,9 @@ export interface ControllerResponse {
 class BookingController {
   async fetchVehicles(req: Request, res: Response) {
     try {
-      await RideService.fetchVehicles(
+      await grpcClients.bookingClient.fetchVehicles(
         {},
-        (err: Error | null, response: IResponse<PricingInterface[]>) => {
+        (err: Error | null, response: IResponse<null>) => {
           if (err || Number(response.status) !== StatusCode.OK) {
             return res.status(+response?.status || 500).json({
               message: response?.message || "Something went wrong",
@@ -41,7 +39,7 @@ class BookingController {
       const data = req.body;
       const id = req.user?.id;
       data.userId = id;
-      RideService.bookCab(data, (err: Error | null, response: any) => {
+      grpcClients.bookingClient.bookCab(data, (err: Error | null, response: any) => {
         if (err || Number(response.status) !== StatusCode.Created) {
           return res.status(+response?.status || 500).json({
             message: response?.message || "Something went wrong",
@@ -66,7 +64,7 @@ class BookingController {
       const {role} = req.params
 console.log({id,role});
 
-      RideService.fetchDriverBookingList( 
+      grpcClients.bookingClient.fetchDriverBookingList( 
         { id, role },
         (err: Error | null, response: any) => {
           if (err || Number(response.status) !== StatusCode.OK) {
@@ -95,7 +93,7 @@ console.log({id,role});
       // const id = req.user?.id;
       console.log("reach get-driver-booking-details", id);
 
-      RideService.fetchDriverBookingDetails(
+      grpcClients.bookingClient.fetchDriverBookingDetails(
         { id },
         (err: Error | null, response: any) => {
           console.log("response", response);
@@ -127,7 +125,7 @@ console.log({id,role});
       };
       console.log("checkSecurityPin", payload);
 
-      RideService.checkSecurityPin(
+      grpcClients.bookingClient.checkSecurityPin(
         payload,
         (err: Error | null, response: any) => {
           console.log("response", response);
@@ -158,7 +156,7 @@ console.log({id,role});
         rideId,
       };
 
-      RideService.cancelRide(payload, (err: Error | null, response: any) => {
+      grpcClients.bookingClient.cancelRide(payload, (err: Error | null, response: any) => {
         console.log("response", response);
 
         if (err || Number(response.status) !== StatusCode.Accepted) {
@@ -185,7 +183,7 @@ console.log({id,role});
         bookingId,
         userId,
       };
-      RideService.completeRide(payload, (err: Error | null, response: any) => {
+      grpcClients.bookingClient.completeRide(payload, (err: Error | null, response: any) => {
         console.log("completeRide response", response);
 
         if (err || Number(response.status) !== StatusCode.Accepted) {

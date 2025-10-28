@@ -1,13 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import uploadToS3, { uploadToS3Public } from "../../../services/s3";
-import { DriverService } from "../../driver/config/driver.client";
-import { commonRes } from "../../../types/common/response";
-import {
-  CheckLoginUserRes,
-  CheckRegisterDriverRes,
-  getResubmissionDocumentsRes,
-  StatusCode,
-} from "retro-roues-common";
+import uploadToS3, { uploadToS3Public } from "../../services/s3";
+import { commonRes, IResponse, StatusCode } from "@retro-routes/shared";
+import { grpcClients } from "../../grpc/grpc-client-manager";
 
 class DriverAuthController {
 
@@ -15,9 +9,9 @@ class DriverAuthController {
     try {
 
       const { mobile } = req.body;
-      await DriverService.CheckLoginDriver(
+      await grpcClients.driverClient.CheckLoginDriver(
         { mobile },
-        (err: Error | null, response: CheckLoginUserRes) => {
+        (err: Error | null, response: IResponse<null>) => {
           if (err || Number(response.status) !== StatusCode.OK) {
             return res.status(+response?.status || 500).json({
               message: response?.message || "Something went wrong",
@@ -41,9 +35,9 @@ class DriverAuthController {
     try {
       const { email } = req.body;
 
-      await DriverService.CheckGoogleLoginDriver(
+      await grpcClients.driverClient.CheckGoogleLoginDriver(
         { email },
-        (err: Error | null, response: CheckLoginUserRes) => {
+        (err: Error | null, response: IResponse<null>) => {
           if (err || response.status !== StatusCode.OK) {
             return res.status(+response?.status || 500).json({
               message: response?.message || "Something went wrong",
@@ -67,9 +61,9 @@ class DriverAuthController {
     try {
       const { mobile } = req.body;
 
-      await DriverService.checkRegisterDriver(
+      await grpcClients.driverClient.checkRegisterDriver(
         { mobile },
-        (err: Error | null, response: CheckRegisterDriverRes) => {
+        (err: Error | null, response: any) => {
           console.log("response",response);
           
           if (
@@ -118,9 +112,9 @@ class DriverAuthController {
     try {
       const { id } = req.params;
 
-      await DriverService.getResubmissionDocuments(
+      await grpcClients.driverClient.getResubmissionDocuments(
         { id },
-        (err: Error | null, response: getResubmissionDocumentsRes) => {
+        (err: Error | null, response: IResponse<null>) => {
           if (err || response.status !== StatusCode.OK) {
             return res.status(+response?.status || 500).json({
               message: response?.message || "Something went wrong",
@@ -182,7 +176,7 @@ class DriverAuthController {
         ...fileUrls,
       };
 
-      await DriverService.postResubmissionDocuments(
+      await grpcClients.driverClient.postResubmissionDocuments(
         payload,
         (err: Error | null, response: commonRes) => {
           if (err || response.status !== StatusCode.OK) {
@@ -216,7 +210,7 @@ class DriverAuthController {
         referralCode: reffered_code,
       };
 
-      await DriverService.Register(
+      await grpcClients.driverClient.Register(
         userData,
         (err: Error | null, response: commonRes) => {
           if (err || Number(response.status) !== StatusCode.OK) {
@@ -269,7 +263,7 @@ class DriverAuthController {
         licenseBackImage,
       };
  
-      await DriverService.identificationUpdate(
+      await grpcClients.driverClient.identificationUpdate(
         data,
         (err: Error | null, response: commonRes) => {
           if (err || Number(response.status) !== StatusCode.OK) {
@@ -305,7 +299,7 @@ class DriverAuthController {
         driverImageUrl: url,
       };
       
-      await DriverService.updateDriverImage(
+      await grpcClients.driverClient.updateDriverImage(
         request,
         (err: Error | null, response: commonRes) => {
           if (err || Number(response.status) !== StatusCode.OK) {
@@ -355,7 +349,7 @@ class DriverAuthController {
         carBackImageUrl,
       };
 
-      await DriverService.vehicleUpdate(
+      await grpcClients.driverClient.vehicleUpdate(
         request,
         (err: Error | null, response: commonRes) => {
           
@@ -398,7 +392,7 @@ class DriverAuthController {
         insuranceImageUrl,
       };
 
-      await DriverService.vehicleInsurancePollutionUpdate(
+      await grpcClients.driverClient.vehicleInsurancePollutionUpdate(
         request,
         (err: Error | null, response: commonRes) => {
           if (err || Number(response.status) !== StatusCode.OK) {
@@ -424,7 +418,7 @@ class DriverAuthController {
     try {
       const request = { ...req.body, ...req.query };
 
-      await DriverService.locationUpdate(
+      await grpcClients.driverClient.locationUpdate(
         request,
         (err: Error | null, response: commonRes) => {
           if (err || Number(response.status) !== StatusCode.OK) {

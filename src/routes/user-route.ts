@@ -1,8 +1,8 @@
 import express from "express";
-import {userController} from "./controller";
-import upload from "../../middleware/multer";
-import {bookingController} from "../booking/controller";
-import PaymentController from '../payment/controller';
+import {userController} from "../modules/user/user-controller";
+import upload from "../middleware/multer";
+import {bookingController} from "../modules/booking/booking-controller";
+import PaymentController from '../modules/payment/payment-controller';
 
 const paymentController = new PaymentController();
 // Public routes 
@@ -25,6 +25,11 @@ protectedUserRoute.get("/getMyTripDetails/:id", bookingController.fetchDriverBoo
 protectedUserRoute.get("/payments/cash-payment", paymentController.conformCashPayment);
 protectedUserRoute.get("/payments/create-checkout-session", paymentController.createCheckoutSession);
 
+//payment routes
+protectedUserRoute.post('/create-checkout-session', paymentController.createCheckoutSession);
+protectedUserRoute.post('/wallet-payment', paymentController.processWalletPayment);
+protectedUserRoute.post('/cash-payment', paymentController.conformCashPayment);
+protectedUserRoute.get('/transaction/:id', paymentController.getTransaction);
 // protectedUserRoute.get("/profile", userController.getProfile); 
 // protectedUserRoute.post("/booking", userController.createBooking); 
 

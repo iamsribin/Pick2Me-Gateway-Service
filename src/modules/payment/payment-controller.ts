@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
-import { StatusCode } from "../../types/common/enum";
-import { PaymentService } from "./config/grpc-client/payment.client";
-import { IResponse } from "../driver/interface";
+import { grpcClients } from "../../grpc/grpc-client-manager";
+import { IResponse, StatusCode } from "@retro-routes/shared";
 
 export default class PaymentController {
   
@@ -17,22 +16,15 @@ export default class PaymentController {
         return;
       }
 
-      await PaymentService.CreateCheckoutSession(
-        { bookingId, userId, driverId, amount },
+      await grpcClients.paymentClient.CreateCheckoutSession({ bookingId, userId, driverId, amount },
         (err: Error | null, result: { sessionId: string; message: string }) => {
-          console.log("result",result);
           
-          if (err) {
-            res.status(StatusCode.BadRequest).json({ message: err.message });
-            return;
-          }
+          if (err) res.status(StatusCode.BadRequest).json({ message: err.message });
           res.status(StatusCode.Created).json(result);
         }
       );
     } catch (error) {
-      res
-        .status(StatusCode.InternalServerError)
-        .json({ message: "Failed to create checkout session" });
+      res.status(StatusCode.InternalServerError).json({ message: "Failed to create checkout session" });
     }
   }
 
@@ -49,7 +41,7 @@ export default class PaymentController {
       }
 
       // Call payment service via gRPC
-      await PaymentService.ProcessWalletPayment(
+      await grpcClients.paymentClient.ProcessWalletPayment(
         { bookingId, userId, driverId, amount },
         (
           err: Error | null,
@@ -79,14 +71,6 @@ export default class PaymentController {
         idempotencyKey = 123,
       } = req.body;
 
-      console.log(
-        "bookingId, userId, driverId, amount",
-        bookingId,
-        userId,
-        driverId,
-        amount
-      );
-
       // Validate input
       if (!bookingId || !userId || !driverId || !amount) {
         res
@@ -96,7 +80,7 @@ export default class PaymentController {
       }
 
       // Call payment service via gRPC
-      await PaymentService.ConformCashPayment(
+      await grpcClients.paymentClient.ConformCashPayment(
         { bookingId, userId, driverId, amount, idempotencyKey },
         (err: Error | null, response: IResponse<null>) => {
           if (err || Number(response.status) !== StatusCode.OK) {
@@ -128,15 +112,6 @@ export default class PaymentController {
         conformation,
       } = req.body;
 
-      console.log(
-        "verifyDriverConformation",
-        bookingId,
-        userId,
-        driverId,
-        amount,
-        conformation
-      );
-
       // Validate input
       if (!bookingId || !userId || !driverId || !amount || !conformation) {
         res
@@ -145,7 +120,7 @@ export default class PaymentController {
         return;
       }
 
-      await PaymentService.ConformCashPayment(
+      await grpcClients.paymentClient.ConformCashPayment(
         { bookingId, userId, driverId, amount, idempotencyKey, conformation },
         (err: Error | null, response: IResponse<null>) => {
           if (err || Number(response.status) !== StatusCode.OK) {
@@ -171,7 +146,7 @@ export default class PaymentController {
       const { id } = req.params;
 
       // Call payment service via gRPC
-      await PaymentService.GetTransaction(
+      await grpcClients.paymentClient.GetTransaction(
         { transactionId: id },
         (err: Error | null, result: any) => {
           if (err) {
@@ -192,7 +167,7 @@ export default class PaymentController {
     try {
       const payload = req.body;
 
-      await PaymentService.HandleWebhook(
+      await grpcClients.paymentClient.HandleWebhook(
         { payload: JSON.stringify(payload) },
         (err: Error | null, result: { message: string }) => {
           if (err) {

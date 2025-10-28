@@ -1,13 +1,8 @@
 import { Request, Response } from "express";
-import { StatusCode } from "../../../types/common/enum";
-import { DriverService } from "../../driver/config/driver.client";
-import { IResponse } from "../../driver/interface";
-import { generateSignedUrl } from "../../../services/generateSignedUrl";
-import {
-  AdminDriverDetailsDTO,
-  PaginatedUserListDTO,
-} from "../../../types/grpc/driver-grpc-response";
-import { recursivelySignImageUrls } from "../../../utils/recursive-image-URL-signing";
+import { generateSignedUrl } from "../../services/generateSignedUrl";
+import { recursivelySignImageUrls } from "../../utils/recursive-image-URL-signing";
+import { IResponse, StatusCode } from "@retro-routes/shared";
+import { grpcClients } from "../../grpc/grpc-client-manager";
 
 export default class DriverController {
   getDriversList = async (req: Request, res: Response) => {
@@ -16,11 +11,11 @@ export default class DriverController {
 
       const searchTerm = search as string;
 
-      await DriverService.GetDriversListByAccountStatus(
+      await grpcClients.driverClient.GetDriversListByAccountStatus(
         { page, limit, search: searchTerm, status },
         async (
           err: Error | null,
-          response: IResponse<PaginatedUserListDTO>
+          response: IResponse<null>
         ) => {
           if (err || Number(response.status) !== StatusCode.OK) {
             return res.status(+response?.status || 500).json({
@@ -57,11 +52,11 @@ export default class DriverController {
   getDriverDetails = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      await DriverService.AdminGetDriverDetailsById(
+      await grpcClients.driverClient.AdminGetDriverDetailsById(
         { id },
         async (
           err: Error | null,
-          response: IResponse<AdminDriverDetailsDTO["data"]>
+          response: IResponse<null>
         ) => {
           console.log("response", response);
           if (err || Number(response.status) !== StatusCode.OK) {
@@ -95,7 +90,7 @@ export default class DriverController {
 
       const request = { id, reason: note, status, fields };
 
-      await DriverService.AdminUpdateDriverAccountStatus(
+      await grpcClients.driverClient.AdminUpdateDriverAccountStatus(
         request,
         (err: Error | null, response: IResponse<boolean>) => {
           if (err || Number(response.status) !== StatusCode.OK) {

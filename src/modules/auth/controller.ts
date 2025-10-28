@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import AsyncHandler from "express-async-handler";
 import { TokenService } from "../../services/token-service";
-import { StatusCode } from "../../types/common/enum";
+import { StatusCode } from "@retro-routes/shared";
 
 // Extend Express Request
 declare global {
@@ -93,7 +93,6 @@ export const handleLogout = (req: Request, res: Response) => {
     sameSite: "none",
     maxAge: 0,
   };
-console.log("logptu");
 
   res.cookie("access_token", "", cookieOptions);
   res.cookie("refresh_token", "", cookieOptions);

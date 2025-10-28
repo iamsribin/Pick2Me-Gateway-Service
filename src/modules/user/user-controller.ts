@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { UserService } from "./config/user.client";
-import { StatusCode } from "../../types/common/enum";
+// import { grpcClients.userClient } from "./config/user.client";
 import { uploadToS3Public } from "../../services/s3";
-import { IResponse } from "../driver/interface";
-import { UserProfileDto } from "./types";
+// import { UserProfileDto } from "./types";
 import { Message } from "google-protobuf";
-import { AuthResponse } from "../../types/common/response";
+// import { AuthResponse } from "../../types/common/response";
+import { grpcClients } from "../../grpc/grpc-client-manager";
+import { IResponse, StatusCode } from "@retro-routes/shared";
 
 class UserController {
   /**
@@ -17,8 +17,7 @@ class UserController {
       const token = req.cookies.otp;
 
       const userData = { ...req.body, userImage, token };
-
-      await UserService.Register(
+        grpcClients.userClient.Register(
         userData,
         (err: Error | null, result: Message) => {
           if (err) {
@@ -46,7 +45,7 @@ class UserController {
     try {
       console.log("=--=-");
 
-      await UserService.CheckUser(
+      await grpcClients.userClient.CheckUser(
         req.body,
         (err: Error | null, result: { token: string; message: string }) => {
           if (err) {
@@ -77,9 +76,9 @@ class UserController {
     try {
       console.log("checkLoginUser", req.body);
 
-      await UserService.CheckLoginUser(
+      await grpcClients.userClient.CheckLoginUser(
         req.body,
-        (err: Error | null, result: AuthResponse) => {
+        (err: Error | null, result: IResponse<null>) => {
           if (err) {
             res.status(StatusCode.BadRequest).json({ message: err.message });
             return;
@@ -101,7 +100,7 @@ class UserController {
   async resendOtp(req: Request, res: Response): Promise<void> {
     try {
       
-      await UserService.ResendOtp(
+      await grpcClients.userClient.ResendOtp(
         req.body,
         (err: Error | null, result: { token: string; message: string }) => {
           if (err) {
@@ -130,9 +129,9 @@ class UserController {
    */
   async checkGoogleLoginUser(req: Request, res: Response): Promise<void> {
     try {
-      await UserService.CheckGoogleLoginUser(
+      await grpcClients.userClient.CheckGoogleLoginUser(
         req.body,
-        (err: Error | null, result: AuthResponse) => {
+        (err: Error | null, result: IResponse<null>) => {
           if (err) {
             res.status(StatusCode.BadRequest).json({ message: err.message });
             return;
@@ -151,10 +150,9 @@ class UserController {
     try {
       const id = req.user?.id;
 
-      await UserService.fetchUserProfile(
+      await grpcClients.userClient.fetchUserProfile(
         { id },
-        (err: Error | null, result: IResponse<UserProfileDto>) => {
-          console.log("result",result);
+        (err: Error | null, result: IResponse<null>) => {
           
           if (err) { 
             res.status(+result.status).json({ message: err.message });
