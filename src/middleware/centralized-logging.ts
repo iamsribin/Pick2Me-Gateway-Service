@@ -2,6 +2,7 @@ const morgan = require("morgan");
 const winston = require("winston");
 require("winston-daily-rotate-file");
 
+// Create Winston logger
 const logger = winston.createLogger({
     level: "info",
     format: winston.format.json(),
@@ -17,6 +18,7 @@ const logger = winston.createLogger({
     ],
 });
 
+// Morgan middleware to log HTTP requests
 const morganMiddleware = morgan("combined", {
     stream: {
         write: (message: string) => logger.info(message.trim()),
