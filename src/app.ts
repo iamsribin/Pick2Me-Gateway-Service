@@ -36,8 +36,7 @@ const services = {
     communication: "http://localhost:5000/",
 };
 
-
-// Verify access token + check blacklist user
+// Verify access token + blacklist user
 app.use(verifyToken);
 
 // mount proxies

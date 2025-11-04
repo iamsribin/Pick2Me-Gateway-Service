@@ -34,6 +34,7 @@ const startServer = async () => {
         app.listen(process.env.PORT, () =>
             console.log(`User service running on port ${process.env.PORT}`)
         );
+        
     } catch (err: any) {
         console.log(err.message);
     } 

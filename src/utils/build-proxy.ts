@@ -1,13 +1,11 @@
-import { Request, Response, RequestHandler } from "express";
-import {
-  createProxyMiddleware,
-  responseInterceptor,
-  Options,
-} from "http-proxy-middleware";
-import { IncomingMessage } from "http";
-import type { ClientRequest } from "http";
+import { IncomingMessage, ClientRequest, ServerResponse } from "http";
+import { RequestHandler } from "express";
+import { createProxyMiddleware, responseInterceptor } from "http-proxy-middleware";
+import { createGatewayJwt } from "./gateway-token";
 
-// Build proxy middleware for a given target.
+/**
+ * Build proxy middleware for a given target.
+ */
 export const buildProxy = (target: string): RequestHandler => {
   const opts = {
     target,
@@ -16,30 +14,23 @@ export const buildProxy = (target: string): RequestHandler => {
     timeout: 30_000,
     logLevel: "warn",
 
-    //error event handlers
-    onError: (err: any, req: Request, res: Response) => {
-      console.error("Proxy error:", err?.message ?? err, req.method, req.url);
-
+    onError: (err: any, req: IncomingMessage, res: ServerResponse) => {
+      console.error("Proxy error:", err?.message ?? err, (req as any).url);
       if (!res.headersSent) {
-        res.status(502).json({ status: 502, message: "Bad Gateway" });
+        res.statusCode = 502;
+        res.setHeader("content-type", "application/json");
+        res.end(JSON.stringify({ status: 502, message: "Bad Gateway" }));
       }
     },
 
-    // req event handlers
-    onProxyReq: (proxyReq: ClientRequest, req: Request, res: Response) => {
+    onProxyReq: (proxyReq: ClientRequest, req: IncomingMessage, res: ServerResponse) => {
+      // create gateway jwt for secure service communication     
+      createGatewayJwt(req, proxyReq);
     },
 
-    // res event handlers
-    onProxyRes: responseInterceptor(
-      async (
-        responseBuffer: Buffer,
-        proxyRes: IncomingMessage,
-        req: Request,
-        res: Response
-      ) => {
-        return responseBuffer;
-      }
-    ),
+    onProxyRes: responseInterceptor(async (responseBuffer: Buffer) => {
+      return responseBuffer;
+    }),
   };
 
   return createProxyMiddleware(opts as any);
