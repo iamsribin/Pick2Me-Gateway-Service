@@ -3,13 +3,19 @@ import cors from "cors";
 import { verifyToken } from "./middleware/verify-token";
 import { logger, morganMiddleware } from "./middleware/centralized-logging";
 import helmet from "helmet";
-import { errorHandler } from "@retro-routes/shared";
 import { buildProxy } from "./utils/build-proxy";
+import { errorHandler } from "@Pick2Me/shared";
+import cookieParser from 'cookie-parser';
+import { generateAccessToken } from "./security-service/create-access-token";
+import { blacklist } from "./security-service/blacklist-refresh-token";
+
 
 const app = express();
 
 // for client IP forward to headers
 app.set("trust proxy", process.env.TRUST_PROXY === "true");
+
+app.use(cookieParser());
 
 //helmet for security headers
 app.use(helmet())
@@ -39,6 +45,8 @@ const services = {
 // Verify access token + blacklist user
 app.use(verifyToken);
 
+app.get("/api/refresh",generateAccessToken)
+app.post("/logout",blacklist)
 // mount proxies
 app.use(["/api/user", "/api/admin"], buildProxy(services.user));
 app.use("/api/driver", buildProxy(services.driver));

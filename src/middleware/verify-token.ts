@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { isPublic } from "../utils/public-routes";
-import { verifyAccessToken } from "@retro-routes/shared";
-
+import { verifyAccessToken } from "../security-service/verify-access-token";
 
 export  const verifyToken = (
     req: Request,
@@ -17,9 +16,7 @@ export  const verifyToken = (
         }        
 
         // Verify access token + check blacklist
-        const verifyAccessTokenMiddleware = verifyAccessToken(
-            process.env.JWT_SECRET as string
-        );
+        const verifyAccessTokenMiddleware = verifyAccessToken();
         
         return verifyAccessTokenMiddleware(req, res, next);
     } catch (err: unknown) {

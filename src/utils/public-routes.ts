@@ -7,13 +7,14 @@ const PUBLIC_ROUTES: { method: string; path: string }[] = [
   { method: "POST", path: "/api/user/resendOtp" },
   { method: "POST", path: "/api/user/checkLoginUser" },
   { method: "POST", path: "/api/user/checkGoogleLoginUser" },
-  { method: "GET", path: "/api/user/refresh" },
+  // { method: "GET", path: "/api/user/refresh" },
   { method: "GET", path: "/api/user/vehicleModels" },
   { method: "DELETE", path: "/api/user/logout" },
   
     
   // public routes 
   { method: "GET", path: "/api/booking/vehicleModels" },
+  { method: "GET", path: "/api/refresh" },
 
   // driver public routes
   { method: "GET", path: "/api/driver/resubmission/:id" },
@@ -30,7 +31,6 @@ const PUBLIC_ROUTES: { method: string; path: string }[] = [
   { method: "POST", path: "/api/driver/vehicleDetails" },
   { method: "POST", path: "/api/driver/insuranceDetails" },
   { method: "POST", path: "/api/driver/resubmission" },
-  { method: "GET", path: "/api/driver/refresh" },
 ];
  
 export const isPublic = (req: Request): boolean => {

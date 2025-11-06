@@ -1,10 +1,10 @@
 import dotenv from "dotenv";
 import { isEnvDefined } from "./utils/env-checker"; 
-import { createRedisService, getRedisService } from "@retro-routes/shared";
 dotenv.config();
 import app from "./app";
 import rateLimit from "express-rate-limit";
 import RedisStore from "rate-limit-redis";
+import { createRedisService, getRedisService } from "@Pick2Me/shared";
 
 // server
 const startServer = async () => {

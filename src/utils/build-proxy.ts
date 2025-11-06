@@ -1,7 +1,7 @@
 import { IncomingMessage, ClientRequest, ServerResponse } from "http";
 import { RequestHandler } from "express";
 import { createProxyMiddleware, responseInterceptor } from "http-proxy-middleware";
-import { createGatewayJwt } from "./gateway-token";
+import { createGatewayJwt } from "../security-service/gateway-token";
 
 /**
  * Build proxy middleware for a given target.

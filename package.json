@@ -11,8 +11,9 @@
     "license": "ISC",
     "type": "commonjs",
     "dependencies": {
-        "@retro-routes/shared": "file:../Retro-Routes-Shared/retro-routes-shared-1.0.1.tgz",
+        "@Pick2Me/shared": "file:../Retro-Routes-Shared/Pick2Me-shared-1.0.1.tgz",
         "@types/node": "^24.9.1",
+        "cookie-parser": "^1.4.7",
         "cors": "^2.8.5",
         "dotenv": "^17.2.3",
         "express-rate-limit": "^8.2.1",
@@ -27,6 +28,7 @@
         "winston-daily-rotate-file": "^5.0.0"
     },
     "devDependencies": {
+        "@types/cookie-parser": "^1.4.10",
         "@types/cors": "^2.8.19",
         "@types/express": "^5.0.5",
         "@types/jsonwebtoken": "^9.0.10",
