@@ -3,7 +3,6 @@ import {
   ForbiddenError,
   generateJwtToken,
   getRedisService,
-  HttpError,
   InternalError,
   StatusCode,
   UnauthorizedError,
@@ -19,26 +18,27 @@ export const generateAccessToken = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const token = req.cookies.refreshToken;
+    const refreshToken = req.cookies.refreshToken;
 
-    if (!token) throw ForbiddenError("refresh token is missing");
+    if (!refreshToken) throw ForbiddenError("refresh token is missing");
 
     const payload = verifyToken(
-      token,
-      process.env.REFRESH_TOKEN_SECRET! as string
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET!
     ) as AccessPayload;
 
-    if (!payload) throw ForbiddenError("token missing");
-
     const redisSvc = getRedisService();
-    const isBlacklisted = await redisSvc.checkBlacklistedToken(payload.id);
+    const isUserBlacklisted = await redisSvc.checkBlacklistedToken(payload.id);
+    const isTokenBlacklisted = await redisSvc.checkBlacklistedToken(
+      refreshToken
+    );
 
-    if (isBlacklisted)
+    if (isUserBlacklisted || isTokenBlacklisted)
       throw UnauthorizedError("Your account has been blocked!");
 
     const accessToken = generateJwtToken(
       { id: payload.id, role: payload.role },
-      process.env.ACCESS_TOKEN_SECRET! as string,
+      process.env.ACCESS_TOKEN_SECRET!,
       "3m"
     );
 
@@ -50,14 +50,12 @@ export const generateAccessToken = async (
       path: "/",
     });
 
-    res.status(200).json({ success: true });
+    res.status(StatusCode.OK).json({ success: true });
   } catch (error) {
-    console.log(error);
     if (error instanceof TokenExpiredError) {
-        console.log("token expired");
-        res.status(StatusCode.Forbidden).json({ message: "token expired"});
-        return
-      }
+      res.status(StatusCode.Forbidden).json({ message: "token expired" });
+      return;
+    }
     throw InternalError("something went wrong");
   }
 };

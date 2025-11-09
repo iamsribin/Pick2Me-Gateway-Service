@@ -1,13 +1,13 @@
 import express from "express";
 import cors from "cors";
 import { verifyToken } from "./middleware/verify-token";
-import { logger, morganMiddleware } from "./middleware/centralized-logging";
+import { morganMiddleware } from "./middleware/centralized-logging";
 import helmet from "helmet";
 import { buildProxy } from "./utils/build-proxy";
 import { errorHandler } from "@Pick2Me/shared";
 import cookieParser from 'cookie-parser';
 import { generateAccessToken } from "./security-service/create-access-token";
-import { blacklist } from "./security-service/blacklist-refresh-token";
+import { logout } from "./security-service/blacklist-refresh-token";
 
 
 const app = express();
@@ -39,20 +39,24 @@ const services = {
     driver: "http://localhost:3002/",
     booking: "http://localhost:3003/",
     payment: "http://localhost:3004/",
-    communication: "http://localhost:5000/",
+    realtime: "http://localhost:5000/",
 };
 
 // Verify access token + blacklist user
 app.use(verifyToken);
 
-app.get("/api/refresh",generateAccessToken)
-app.post("/logout",blacklist)
+app.get("/api/v1/refresh",generateAccessToken)
+app.post("/logout",logout)
+
 // mount proxies
-app.use(["/api/user", "/api/admin"], buildProxy(services.user));
-app.use("/api/driver", buildProxy(services.driver));
-app.use("/api/booking", buildProxy(services.booking));
-app.use("/api/payment", buildProxy(services.payment));
-app.use("/api/communication", buildProxy(services.communication));
+app.use("/api/v1/users", buildProxy(services.user));
+app.use("/api/v1/drivers", buildProxy(services.driver));
+app.use("/api/v1/payments", buildProxy(services.payment));
+app.use("/api/v1/notifications", buildProxy(services.realtime));
+app.use("/api/v1/bookings", buildProxy(services.user,'/bookings'));
+app.use("/api/v1/vehicles", buildProxy(services.user,'/vehicles'));
+app.use("/api/v1/admin/users", buildProxy(services.user,'/admin/users'));
+app.use("/api/v1/admin/drivers", buildProxy(services.driver,"/admin/drivers"));
  
 // Error handler
 app.use(errorHandler);

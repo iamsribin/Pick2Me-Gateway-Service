@@ -23,12 +23,10 @@ export function verifyAccessToken(): RequestHandler {
       const redisClient = RedisService.getInstance();
 
       const isUserBlacklisted = await redisClient.checkBlacklistedToken(decoded.id);
-      const isTokenBlacklisted = await redisClient.checkBlacklistedToken(token);
 
       console.log("isUserBlacklisted", isUserBlacklisted, "id", decoded.id);
-      console.log("isTokenBlacklisted", isTokenBlacklisted, "id", decoded.id);
 
-      if (isTokenBlacklisted || isUserBlacklisted) {
+      if (isUserBlacklisted) {
         res.clearCookie("refreshToken", { path: "/" });
         res.clearCookie("accessToken", { path: "/" });
 

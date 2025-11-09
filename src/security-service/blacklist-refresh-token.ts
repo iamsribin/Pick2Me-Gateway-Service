@@ -1,9 +1,7 @@
 import { getRedisService, StatusCode, verifyToken } from "@Pick2Me/shared";
 import { NextFunction, Request, Response } from "express";
 
-
-
-export async function blacklist(req: Request, res: Response, next: NextFunction) {
+export async function logout(req: Request, res: Response, next: NextFunction) {
   try {
     const refreshToken = req.cookies?.refreshToken;
 

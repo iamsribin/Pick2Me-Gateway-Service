@@ -1,40 +1,37 @@
 import { Request } from "express";
+import { match } from "path-to-regexp";
 
-const PUBLIC_ROUTES: { method: string; path: string }[] = [
+const PUBLIC_ROUTE_PATTERNS: { method: string; path: string }[] = [
   // user public routes
-  { method: "POST", path: "/api/user/register" },
-  { method: "POST", path: "/api/user/checkUser" },
-  { method: "POST", path: "/api/user/resendOtp" },
-  { method: "POST", path: "/api/user/checkLoginUser" },
-  { method: "POST", path: "/api/user/checkGoogleLoginUser" },
-  // { method: "GET", path: "/api/user/refresh" },
-  { method: "GET", path: "/api/user/vehicleModels" },
-  { method: "DELETE", path: "/api/user/logout" },
-  
+  { method: "POST", path: "/api/v1/users/register" },
+  { method: "POST", path: "/api/v1/users/check-registration" },
+  { method: "POST", path: "/api/v1/users/resend-otp" },
+  { method: "POST", path: "/api/v1/users/check-login-number" },
+  { method: "POST", path: "/api/v1/users/check-login-email" },
     
   // public routes 
-  { method: "GET", path: "/api/booking/vehicleModels" },
-  { method: "GET", path: "/api/refresh" },
+  { method: "GET", path: "/api/v1/vehicles/models" },
+  { method: "GET", path: "/api/v1/refresh" },
 
   // driver public routes
-  { method: "GET", path: "/api/driver/resubmission/:id" },
-  { method: "POST", path: "/api/driver/checkLoginDriver" },
-  { method: "POST", path: "/api/driver/registerDriver" },
-  { method: "POST", path: "/api/driver/checkGoogleLoginDriver" },
-  { method: "POST", path: "/api/driver/location" },
-  { method: "POST", path: "/api/driver/handle-online-change" },
-  { method: "POST", path: "/api/driver/checkRegisterDriver" },
-  { method: "DELETE", path: "/api/driver/logout" },
-
-  { method: "POST", path: "/api/driver/identification" },
-  { method: "POST", path: "/api/driver/uploadDriverImage" },
-  { method: "POST", path: "/api/driver/vehicleDetails" },
-  { method: "POST", path: "/api/driver/insuranceDetails" },
-  { method: "POST", path: "/api/driver/resubmission" },
+  { method: "POST", path: "/api/v1/driver/register" },
+  { method: "POST", path: "/api/v1/drivers/check-login-number" },
+  { method: "POST", path: "/api/v1/driver/check-registration" },
+  { method: "POST", path: "/api/v1/drivers/check-login-email" },
+  
+  { method: "POST", path: "/api/v1/drivers/vehicle/register" },
+  { method: "POST", path: "/api/v1/drivers/location/register" },
+  { method: "POST", path: "/api/v1/drivers/identification/register" },
+  { method: "GET", path: "/api/v1/drivers/me/documents/resubmission/:id" },
+  { method: "POST", path: "/api/v1/drivers/profile-image/register" },
+  { method: "POST", path: "/api/v1/drivers/insurance/register" },
+  { method: "POST", path: "/api/v1/drivers/me/document/resubmission" },
 ];
  
 export const isPublic = (req: Request): boolean => {
-    return PUBLIC_ROUTES.some(
-        (request) => request.method === req.method && request.path === req.path
-    );
+  return PUBLIC_ROUTE_PATTERNS.some(r => {
+    if (r.method !== req.method) return false;
+    const matcher = match(r.path, { decode: decodeURIComponent });
+    return Boolean(matcher(req.path));
+  });
 };
