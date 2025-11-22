@@ -10,7 +10,6 @@ import { createRedisService, getRedisService } from "@Pick2Me/shared";
 const startServer = async () => {
     try {
         
-        // check all env are defined
         isEnvDefined();  
 
         // create redis service for check blacklist user and rate limiting
