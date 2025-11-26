@@ -10,7 +10,8 @@ const PUBLIC_ROUTE_PATTERNS: { method: string; path: string }[] = [
   { method: "POST", path: "/api/v1/users/check-login-email" },
     
   // public routes 
-  { method: "GET", path: "/api/v1/vehicles/models" },
+  { method: "GET", path: "/api/v1/bookings/vehicles" },
+  { method: "GET", path: "/api/v1/bookings/users/list-online-drivers" },
   { method: "GET", path: "/api/v1/refresh" },
 
   // driver public routes

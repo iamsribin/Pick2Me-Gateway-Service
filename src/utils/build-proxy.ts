@@ -15,7 +15,7 @@ export const buildProxy = (target: string, isPathRewrite?:string): RequestHandle
     proxyTimeout: 15_000,
     timeout: 30_000,
     logLevel: "warn",
-    pathRewrite:(path: string) => {
+    pathRewrite:(path: string) => {       
       if(isPathRewrite){
         return isPathRewrite+path
       }

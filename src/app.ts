@@ -53,7 +53,7 @@ app.use("/api/v1/users", buildProxy(services.user));
 app.use("/api/v1/drivers", buildProxy(services.driver));
 app.use("/api/v1/payments", buildProxy(services.payment));
 app.use("/api/v1/notifications", buildProxy(services.realtime));
-app.use("/api/v1/bookings", buildProxy(services.user,'/bookings'));
+app.use("/api/v1/bookings", buildProxy(services.booking));
 app.use("/api/v1/vehicles", buildProxy(services.user,'/vehicles'));
 app.use("/api/v1/admin/users", buildProxy(services.user,'/admin/users'));
 app.use("/api/v1/admin/drivers", buildProxy(services.driver,"/admin/drivers"));
