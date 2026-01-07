@@ -4,7 +4,7 @@ dotenv.config();
 import app from "./app";
 import rateLimit from "express-rate-limit";
 import RedisStore from "rate-limit-redis";
-import { createRedisService, getRedisService } from "@Pick2Me/shared";
+import { createRedisService, getRedisService } from "@pick2me/shared";
 
 // server
 const startServer = async () => {

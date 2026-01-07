@@ -12,8 +12,8 @@ export const buildProxy = (target: string, isPathRewrite?:string): RequestHandle
   const opts = {
     target,
     changeOrigin: true,
-    proxyTimeout: 15_000,
-    timeout: 30_000,
+    proxyTimeout: 30_000,
+    timeout: 60_000,
     logLevel: "warn",
     pathRewrite:(path: string) => {       
       if(isPathRewrite){

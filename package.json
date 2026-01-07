@@ -2,16 +2,24 @@
     "name": "pick2me-gateway",
     "version": "1.0.0",
     "description": "",
-    "main": "index.js",
+    "main": "server.js",
     "scripts": {
         "dev": "nodemon"
+    },
+        "scripts": {
+        "build": "tsc && tsc-alias && tsc-esm-fix",
+        "start": "node dist/server.js",
+        "dev": "tsx watch src/server.ts",
+        "format": "prettier --write \"src/**/*.{js,ts,tsx,json,css,md}\"",
+        "lint": "eslint . --ext .ts,.js",
+        "lint:fix": "eslint . --ext .ts,.js --fix"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
-    "type": "commonjs",
+    "type": "module",
     "dependencies": {
-        "@Pick2Me/shared": "file:../Retro-Routes-Shared/Pick2Me-shared-1.0.1.tgz",
+        "@pick2me/shared": "^1.0.4",
         "@types/node": "^24.9.1",
         "cookie-parser": "^1.4.7",
         "cors": "^2.8.5",

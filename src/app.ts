@@ -4,7 +4,7 @@ import { verifyToken } from "./middleware/verify-token";
 import { morganMiddleware } from "./middleware/centralized-logging";
 import helmet from "helmet";
 import { buildProxy } from "./utils/build-proxy";
-import { errorHandler } from "@Pick2Me/shared";
+import { errorHandler } from "@pick2me/shared/errors"
 import cookieParser from 'cookie-parser';
 import { generateAccessToken } from "./security-service/create-access-token";
 import { logout } from "./security-service/blacklist-refresh-token";
@@ -39,7 +39,7 @@ const services = {
     driver: "http://localhost:3002/",
     booking: "http://localhost:3003/",
     payment: "http://localhost:3004/",
-    realtime: "http://localhost:5000/",
+    realtime: "http://localhost:3009/",
 };
 
 // Verify access token + blacklist user

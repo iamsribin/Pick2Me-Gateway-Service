@@ -1,4 +1,4 @@
-import { ForbiddenError, RedisService, StatusCode } from "@Pick2Me/shared";
+import { ForbiddenError, RedisService, StatusCode } from "@pick2me/shared";
 import { RequestHandler } from "express";
 import jwt, { JwtPayload, TokenExpiredError } from "jsonwebtoken";
 

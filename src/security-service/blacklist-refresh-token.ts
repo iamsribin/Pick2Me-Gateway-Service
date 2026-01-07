@@ -1,4 +1,4 @@
-import { getRedisService, StatusCode, verifyToken } from "@Pick2Me/shared";
+import { getRedisService, StatusCode, verifyToken } from "@pick2me/shared";
 import { NextFunction, Request, Response } from "express";
 
 export async function logout(req: Request, res: Response, next: NextFunction) {

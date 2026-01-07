@@ -7,7 +7,7 @@ import {
   StatusCode,
   UnauthorizedError,
   verifyToken,
-} from "@Pick2Me/shared";
+} from "@pick2me/shared";
 import { Request, Response } from "express";
 import { NextFunction } from "http-proxy-middleware/dist/types";
 import { TokenExpiredError } from "jsonwebtoken";
