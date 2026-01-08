@@ -1,6 +1,13 @@
-import { ForbiddenError, RedisService, StatusCode } from "@pick2me/shared";
+import {
+  ForbiddenError,
+} from "@pick2me/shared/errors";
+import { StatusCode } from "@pick2me/shared/interfaces";
+import { RedisService } from "@pick2me/shared/redis";
 import { RequestHandler } from "express";
-import jwt, { JwtPayload, TokenExpiredError } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
+import type { JwtPayload } from "jsonwebtoken";
+
+const { TokenExpiredError } = jwt;
 
 export function verifyAccessToken(): RequestHandler {
   return async (req, res, next) => {

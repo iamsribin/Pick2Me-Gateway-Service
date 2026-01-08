@@ -4,7 +4,7 @@ dotenv.config();
 import app from "./app";
 import rateLimit from "express-rate-limit";
 import RedisStore from "rate-limit-redis";
-import { createRedisService, getRedisService } from "@pick2me/shared";
+import { createRedisService, getRedisService } from "@pick2me/shared/redis";
 
 // server
 const startServer = async () => {
@@ -31,7 +31,7 @@ const startServer = async () => {
 
         //listen to port
         app.listen(process.env.PORT, () =>
-            console.log(`User service running on port ${process.env.PORT}`)
+            console.log(`gateway service running on port ${process.env.PORT}`)
         );
         
     } catch (err: any) {

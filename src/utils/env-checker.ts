@@ -1,4 +1,4 @@
-import { envChecker } from "@pick2me/shared";
+import { envChecker } from "@pick2me/shared/utils";
 
 export const isEnvDefined = () => {
   envChecker(process.env.PORT, "PORT");

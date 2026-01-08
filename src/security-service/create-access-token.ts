@@ -1,17 +1,17 @@
 import {
-  AccessPayload,
   ForbiddenError,
-  generateJwtToken,
-  getRedisService,
   InternalError,
-  StatusCode,
   UnauthorizedError,
-  verifyToken,
-} from "@pick2me/shared";
+} from "@pick2me/shared/errors";
+import { StatusCode } from "@pick2me/shared/interfaces";
+import { getRedisService } from "@pick2me/shared/redis";
+import { generateJwtToken,verifyToken,AccessPayload } from "@pick2me/shared/auth";
+
 import { Request, Response } from "express";
 import { NextFunction } from "http-proxy-middleware/dist/types";
-import { TokenExpiredError } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
+const { TokenExpiredError } = jwt;
 export const generateAccessToken = async (
   req: Request,
   res: Response,
