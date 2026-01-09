@@ -1,11 +1,9 @@
-import {
-  ForbiddenError,
-} from "@pick2me/shared/errors";
-import { StatusCode } from "@pick2me/shared/interfaces";
-import { RedisService } from "@pick2me/shared/redis";
-import { RequestHandler } from "express";
-import jwt from "jsonwebtoken";
-import type { JwtPayload } from "jsonwebtoken";
+import { ForbiddenError } from '@pick2me/shared/errors';
+import { StatusCode } from '@pick2me/shared/interfaces';
+import { RedisService } from '@pick2me/shared/redis';
+import { RequestHandler } from 'express';
+import jwt from 'jsonwebtoken';
+import type { JwtPayload } from 'jsonwebtoken';
 
 const { TokenExpiredError } = jwt;
 
@@ -17,29 +15,26 @@ export function verifyAccessToken(): RequestHandler {
       if (!token) {
         res.status(StatusCode.Forbidden).json({
           success: false,
-          message: "No token provided",
+          message: 'No token provided',
         });
         return;
       }
 
-      const decoded = jwt.verify(
-        token,
-        process.env.ACCESS_TOKEN_SECRET!
-      ) as JwtPayload;
+      const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!) as JwtPayload;
 
       const redisClient = RedisService.getInstance();
 
       const isUserBlacklisted = await redisClient.checkBlacklistedToken(decoded.id);
 
-      console.log("isUserBlacklisted", isUserBlacklisted, "id", decoded.id);
+      console.log('isUserBlacklisted', isUserBlacklisted, 'id', decoded.id);
 
       if (isUserBlacklisted) {
-        res.clearCookie("refreshToken", { path: "/" });
-        res.clearCookie("accessToken", { path: "/" });
+        res.clearCookie('refreshToken', { path: '/' });
+        res.clearCookie('accessToken', { path: '/' });
 
         await redisClient.removeBlacklistedToken(decoded.id);
 
-        throw ForbiddenError("Your account is blocked!");
+        throw ForbiddenError('Your account is blocked!');
       }
 
       const payload = {
@@ -48,28 +43,26 @@ export function verifyAccessToken(): RequestHandler {
       };
 
       const signed = jwt.sign(payload, process.env.GATEWAY_SHARED_SECRET!, {
-        algorithm: "HS256",
-        expiresIn: "30s",
-        issuer: "api-gateway",
+        algorithm: 'HS256',
+        expiresIn: '30s',
+        issuer: 'api-gateway',
       });
 
-      req.headers["x-gateway-jwt"] = signed;
+      req.headers['x-gateway-jwt'] = signed;
 
       return next();
     } catch (err: unknown) {
       if (err instanceof TokenExpiredError) {
-        console.log("token expired");
+        console.log('token expired');
 
         res
           .status(StatusCode.Forbidden)
-          .json({ message: "token expired", reason: "token_expired" });
+          .json({ message: 'token expired', reason: 'token_expired' });
         return;
       }
-      console.log("invalid expired");
+      console.log('invalid expired');
 
-      res
-        .status(StatusCode.Forbidden)
-        .json({ message: "Invalid token", reason: "invalid_token" });
+      res.status(StatusCode.Forbidden).json({ message: 'Invalid token', reason: 'invalid_token' });
       return;
     }
   };
