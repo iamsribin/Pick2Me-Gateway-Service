@@ -35,10 +35,10 @@ app.use(
 // Services
 const services = {
   user: 'http://user-service:3001/',
-  driver: 'http://localhost:3002/',
-  booking: 'http://localhost:3003/',
-  payment: 'http://localhost:3004/',
-  realtime: 'http://localhost:3009/',
+  driver: 'http://driver-service:3002/',
+  booking: 'http://booking-service:3003/',
+  payment: 'http://payment-service:3004/',
+  realtime: 'http://realtime-service:3009/',
 };
 
 // Verify access token + blacklist user

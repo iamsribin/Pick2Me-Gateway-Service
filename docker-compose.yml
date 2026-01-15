@@ -1,5 +1,5 @@
 services:
-  user-service:
+  gateway-service:
     image: pick2me-gateway-service:1.0
     build:
       context: .
